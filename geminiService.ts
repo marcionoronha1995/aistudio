@@ -7,18 +7,29 @@ export const generateLoginProject = async () => {
   const model = 'gemini-3-flash-preview';
   
   const prompt = `
-    Crie um sistema de login completo em Python modularizado com interface gráfica (GUI).
-    Requisitos:
-    - O usuário deve poder logar usando Nome, CPF ou E-mail em um único campo inteligente ou campos separados.
-    - Use a biblioteca 'flet' para a interface gráfica (é moderna e baseada em Flutter).
-    - O código deve ser profissional, com tratamento de erros e validações (regex para email, algoritmo de CPF).
-    - Arquivos obrigatórios:
-        1. main.py: Ponto de entrada.
-        2. auth.py: Lógica de autenticação e validações.
-        3. database.py: Persistência (mockada).
-        4. gui.py: Definição da interface visual com Flet.
-    - Gere uma documentação técnica detalhada em Markdown.
-    - Forneça a estrutura de um mapa mental relacionando os arquivos e o fluxo da UI.
+    Crie um sistema de login profissional e SEGURO em Python.
+    
+    Requisitos Técnicos do Código:
+    - O login deve ser encapsulado em uma função principal 'fazer_login()' que retorna um booleano ou objeto de usuário.
+    - SEGURANÇA: As senhas NÃO podem ser gravadas em texto plano. Use a biblioteca 'hashlib' (sha256 com salt) para simular o armazenamento seguro.
+    - O sistema deve verificar o acesso comparando o hash da senha digitada com o hash armazenado.
+    - Aceitar Nome, CPF ou E-mail no campo de identificação em uma única lógica de busca.
+    - Modularização:
+        1. auth.py: Funções de hashing (hash_password, verify_password) e lógica de validação.
+        2. database.py: Simulação de DB com dicionários contendo Hashes de senhas.
+        3. gui.py: Interface Flet (GUI) com feedback visual de erro/sucesso.
+        4. main.py: Ponto de entrada que chama a função de login e inicia a UI.
+
+    Conteúdo da Documentação (Markdown):
+    - Explicação didática sobre Hashing (SHA-256) e por que não usar criptografia reversível para senhas.
+    - Guia de instalação das dependências (flet).
+    - Seção "Tecnologias Alternativas para Produção": Sugira Stacks modernas como:
+        - Web: FastAPI + SQLAlchemy + PostgreSQL + JWT (Bearer Token).
+        - Frontend: React (Vite) + Tailwind CSS + Auth.js.
+        - Mobile: Flutter + Firebase Auth.
+
+    Estrutura do Mapa Mental:
+    - Inclua o nó de "Camada de Segurança/Hash" entre a UI e o Banco de Dados.
 
     Responda EXCLUSIVAMENTE em formato JSON seguindo este esquema:
     {
@@ -27,7 +38,7 @@ export const generateLoginProject = async () => {
       ],
       "documentation": "string (markdown content)",
       "mentalMap": {
-        "nodes": [{"id": "string", "label": "string", "type": "file|logic|ui"}],
+        "nodes": [{"id": "string", "label": "string", "type": "file|logic|security|ui"}],
         "links": [{"source": "string", "target": "string"}]
       }
     }

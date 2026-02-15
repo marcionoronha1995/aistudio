@@ -31,9 +31,13 @@ const ArchitectureMap: React.FC<Props> = ({ data }) => {
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    const simulation = d3.forceSimulation<Node>(data.nodes)
-      .force("link", d3.forceLink<Node, Link>(data.links).id(d => d.id).distance(100))
-      .force("charge", d3.forceManyBody().strength(-300))
+    // Re-create nodes and links to avoid mutations issues with d3
+    const nodes = data.nodes.map(d => ({ ...d }));
+    const links = data.links.map(d => ({ ...d }));
+
+    const simulation = d3.forceSimulation<Node>(nodes)
+      .force("link", d3.forceLink<Node, Link>(links).id(d => d.id).distance(120))
+      .force("charge", d3.forceManyBody().strength(-400))
       .force("center", d3.forceCenter(width / 2, height / 2));
 
     const g = svg.append("g");
@@ -41,14 +45,14 @@ const ArchitectureMap: React.FC<Props> = ({ data }) => {
     const link = g.append("g")
       .attr("class", "links")
       .selectAll("line")
-      .data(data.links)
+      .data(links)
       .enter().append("line")
       .attr("class", "map-link");
 
     const node = g.append("g")
       .attr("class", "nodes")
       .selectAll("g")
-      .data(data.nodes)
+      .data(nodes)
       .enter().append("g")
       .call(d3.drag<SVGGElement, Node>()
         .on("start", (event, d) => {
@@ -66,15 +70,25 @@ const ArchitectureMap: React.FC<Props> = ({ data }) => {
           d.fy = null;
         }));
 
+    const getColor = (type: string) => {
+      switch(type) {
+        case 'file': return '#3b82f6'; // Blue
+        case 'security': return '#ef4444'; // Red for security
+        case 'logic': return '#10b981'; // Green
+        case 'ui': return '#f59e0b'; // Amber
+        default: return '#94a3b8';
+      }
+    };
+
     node.append("circle")
-      .attr("r", 10)
+      .attr("r", 12)
       .attr("class", "map-node")
-      .style("fill", d => d.type === 'file' ? '#3b82f6' : '#10b981');
+      .style("fill", d => getColor(d.type));
 
     node.append("text")
-      .attr("dx", 15)
-      .attr("dy", 4)
-      .attr("class", "map-text")
+      .attr("dx", 18)
+      .attr("dy", 5)
+      .attr("class", "map-text text-xs font-bold")
       .text(d => d.label);
 
     simulation.on("tick", () => {
@@ -92,9 +106,15 @@ const ArchitectureMap: React.FC<Props> = ({ data }) => {
   }, [data]);
 
   return (
-    <div className="w-full bg-white rounded-xl border border-slate-200 overflow-hidden">
-      <div className="bg-slate-50 px-4 py-2 border-b border-slate-200 flex justify-between items-center">
-        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Mapa de Arquitetura</span>
+    <div className="w-full bg-white rounded-xl border border-slate-200 overflow-hidden shadow-inner">
+      <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
+        <div className="flex gap-4">
+           <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-blue-500"></div><span className="text-[10px] text-slate-500 font-bold uppercase">Arquivo</span></div>
+           <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-red-500"></div><span className="text-[10px] text-slate-500 font-bold uppercase">Segurança</span></div>
+           <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-green-500"></div><span className="text-[10px] text-slate-500 font-bold uppercase">Lógica</span></div>
+           <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-amber-500"></div><span className="text-[10px] text-slate-500 font-bold uppercase">Interface</span></div>
+        </div>
+        <span className="text-xs font-semibold text-slate-400">Arraste os nós para interagir</span>
       </div>
       <svg ref={svgRef} className="w-full h-[400px]"></svg>
     </div>

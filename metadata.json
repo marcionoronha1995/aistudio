@@ -1,5 +1,5 @@
 {
-  "name": "Gerador de Sistema de Login Python",
-  "description": "Uma ferramenta avançada para gerar código Python modular para sistemas de login, incluindo documentação técnica e mapas mentais de arquitetura utilizando IA.",
+  "name": "PySecure Generator",
+  "description": "Gerador de sistemas de login Python seguros com interface Flet, hashing SHA-256 e documentação técnica completa.",
   "requestFramePermissions": []
 }
